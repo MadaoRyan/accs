@@ -1,0 +1,11 @@
+#!/bin/csh
+
+echo "=============================================="
+echo
+echo "            PROC_NAME   PROC_NUM"
+echo
+echo -n "            biz_trust   ["
+echo -n `ps -e | grep biz_trust | wc -l`
+echo "]"
+echo
+echo "=============================================="

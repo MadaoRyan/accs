@@ -1,0 +1,12 @@
+int txn60001(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60002(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60003(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60004(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60005(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60006(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60007(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn60008(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn90001(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn90002(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn90003(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);
+int txn90004(char *pData,T_HEAD t_Head,char *pOutData,char *pErrNo);

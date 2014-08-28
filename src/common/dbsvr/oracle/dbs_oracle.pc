@@ -1,0 +1,255 @@
+/*
+ *
+ *
+ * Database Oracle Common Function
+ *
+ *
+ * FileName: dbs_oracle.pc
+ *
+ *  <Date>        <Author>       <Auditor>     <Desc>
+ */
+
+/*--------------------------- Include files -----------------------------*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+EXEC SQL INCLUDE sqlca;
+EXEC SQL INCLUDE sqlcpr;
+
+#include "glb_dbs.h"
+
+/*--------------------------- Macro define ------------------------------*/
+#define	_TINY_BUF_LEN	32
+#define	_MINI_BUF_LEN	256
+#define	_LARGE_BUF_LEN	1024
+#define	_HUGE_BUF_LEN	10240
+
+/*---------------------------- Type define ------------------------------*/
+
+/*---------------------- Local function declaration ---------------------*/
+int dbsSqlCode2DbsCode(int iSqlCode);
+
+/*-------------------------  Global variable ----------------------------*/
+static struct sqlca	f_sqlca;
+static char	f_sErrInfo[_HUGE_BUF_LEN];
+static char	f_sLastSql[_HUGE_BUF_LEN];
+
+/*-------------------------  Global functions ---------------------------*/
+/**
+ * dbsConnect
+ *
+ * @param sConnStr: 连接字符串
+ *
+ * @return 0:成功
+ *      其它:出错
+ *
+ */
+int dbsConnect(char *sConnStr)
+{
+	EXEC SQL BEGIN DECLARE SECTION;
+		char conn[256];
+	EXEC SQL END DECLARE SECTION;
+	strcpy(conn,sConnStr);
+	EXEC SQL CONNECT :conn;
+
+	return dbsSqlCode2DbsCode(sqlca.sqlcode);
+}
+
+/**
+ * dbsBegin
+ *
+ * @return 0:成功
+ *      其它:出错
+ *
+ */
+int dbsBegin(void)
+{
+	return 0;
+}
+
+/**
+ * dbsCommit
+ *
+ * @return 0:成功
+ *      其它:出错
+ *
+ */
+int dbsCommit(void)
+{
+	EXEC SQL COMMIT WORK;
+
+	return dbsSqlCode2DbsCode(sqlca.sqlcode);
+}
+
+/**
+ * dbsRollback
+ *
+ * @return 0:成功
+ *      其它:出错
+ *
+ */
+int dbsRollback(void)
+{
+	EXEC SQL ROLLBACK WORK;
+
+	return dbsSqlCode2DbsCode(sqlca.sqlcode);
+}
+
+/**
+ * dbsDisconnect
+ *
+ * @return 0:成功
+ *      其它:出错
+ *
+ */
+int dbsDisconnect(void)
+{
+	EXEC SQL ROLLBACK WORK RELEASE;
+
+	return dbsSqlCode2DbsCode(sqlca.sqlcode);
+}
+
+/**
+ * dbsSqlCode
+ */
+int dbsSqlCode(void)
+{
+	return (sqlca.sqlcode);
+}
+
+/**
+ * dbsSqlcaSave
+ */
+int dbsSqlcaSave(void)
+{
+	f_sqlca = sqlca;
+	return 0;
+}
+
+/**
+ * dbsSqlcaRestore
+ */
+int dbsSqlcaRestore(void)
+{
+	sqlca = f_sqlca;
+	return 0;
+}
+
+/**
+ * dbsGetErrInfo
+ *
+ * @param sBuf: 输出缓存区
+ * @param iBufLen: 输出缓存区长度
+ *
+ * @return sBuf
+ *
+ */
+char *dbsGetErrInfo(char *sBuf, int iBufLen)
+{
+	size_t	iBufLenSave = iBufLen - 1;
+	size_t	iMsgLen;
+
+	sqlglm((unsigned char *)sBuf, &iBufLenSave, &iMsgLen);
+	sBuf[iMsgLen] = '\0';
+
+	return (sBuf);
+}
+
+/**
+ * dbsErrStr
+ */
+char *dbsErrStr(void)
+{
+	char *p = f_sErrInfo;
+
+	dbsGetErrInfo(f_sErrInfo, sizeof(f_sErrInfo));
+
+	while (*p != '\0') {
+		if (*p == '\r' || *p == '\n')
+			*p = ' ';
+		p++;
+	}
+
+	do {
+		p--;
+	} while (*p == ' ');
+	*(p + 1) = '\0';
+
+	return f_sErrInfo;
+}
+
+/**
+ * dbsGetLastSql
+ *
+ * @param sBuf: 输出缓存区
+ * @param iBufLen: 输出缓存区长度
+ *
+ * @return sBuf
+ *
+ */
+char *dbsGetLastSql(char *sBuf, int iBufLen)
+{
+	size_t	iBufLenSave = iBufLen - 1;
+	size_t	iCode;
+
+	sqlgls(sBuf, &iBufLenSave, &iCode);
+	sBuf[iBufLenSave] = '\0';
+
+	return sBuf;
+}
+
+/**
+ * dbsLastSql
+ */
+char *dbsLastSql(void)
+{
+	dbsGetLastSql(f_sLastSql, sizeof(f_sLastSql));
+
+	return f_sLastSql;
+}
+
+/**
+ * dbsExecute
+ */
+int dbsExecute(const char *sSql)
+{
+	EXEC SQL BEGIN DECLARE SECTION;
+		char sTmp[1024*6];
+	EXEC SQL END DECLARE SECTION;
+		strcpy(sTmp,sSql);
+	EXEC SQL EXECUTE IMMEDIATE :sTmp;
+
+	return dbsSqlCode2DbsCode(sqlca.sqlcode);
+}
+
+/**
+ * dbsSqlCode2DbsCode
+ */
+int dbsSqlCode2DbsCode(int iSqlCode)
+{
+	switch(iSqlCode) {
+		case    -1: return ERR_TOP_DBS_UNIQUE;
+		case -1400: return ERR_TOP_DBS_NOT_NULL;
+		case  1403: return ERR_TOP_DBS_NOTFOUND;
+		case -1405: return ERR_TOP_DBS_DBNULL;
+		case -1012:
+		case -3113:
+		case -3114: return ERR_TOP_DBS_DISCONNECT;
+		default   : return iSqlCode;
+	}
+}
+
+/**
+ * dbsSetOption
+ */
+int
+dbsSetOption(char *sOption, char *sValue)
+{
+	return ERR_TOP_DBS_DBNULL;
+}
+
+/*-------------------------  Local functions ----------------------------*/
+
+/*-----------------------------  End ------------------------------------*/
+

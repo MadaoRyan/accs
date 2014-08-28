@@ -1,0 +1,38 @@
+/*
+ *
+ * 
+ * dbs 17
+ * 
+ * 
+ * FileName: dbs_17.c
+ * 
+ *  <Date>        <Author>       <Auditor>     <Desc>
+ */
+/*--------------------------- Include files -----------------------------*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+EXEC SQL INCLUDE sqlca;
+
+#define TOP_DBS_NUM_SUBFIX(_STR) _STR##17
+
+EXEC SQL INCLUDE  "dbs_x.pc";
+
+/*--------------------------- Macro define ------------------------------*/
+#define _DLEN_TINY_BUF 64
+#define _DLEN_MINI_BUF 256
+#define _DLEN_LARGE_BUF 1024
+#define _DLEN_HUGE_BUF 10240
+/*---------------------------- Type define ------------------------------*/
+
+/*---------------------- Local function declaration ---------------------*/
+
+/*-------------------------  Global variable ----------------------------*/
+
+/*-------------------------  Global functions ---------------------------*/
+
+/*-------------------------  Local functions ----------------------------*/
+
+/*-----------------------------  End ------------------------------------*/
+

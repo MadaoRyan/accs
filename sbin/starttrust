@@ -1,0 +1,13 @@
+RACLE_BASE=/oracle
+ORACLE_SID=orcl
+ORACLE_HOME=$ORACLE_BASE/product/10g
+PATH=$PATH:$ORACLE_HOME/bin
+export ORACLE_BASE ORACLE_SID ORACLE_HOME PATH
+
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tonglink/accs/lib
+export LD_LIBRARY_PATH
+
+LOG_LEVEL=4
+export LOG_LEVEL
+
+/home/tonglink/accs/bin/biz_trust -p 9527 -o 500 &

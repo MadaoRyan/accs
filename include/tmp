@@ -1,0 +1,21 @@
+#ifndef _PARSE_H
+#define _PARSE_H
+
+#define HEAD_LEN                  100
+#define LEN_ACCID                 18
+#define LEN_PLATID                8
+#define LEN_AMOUNT                18
+#define LEN_ID_TYPE               2
+#define LEN_PERSON_ID             18
+#define LEN_NAME                  20
+#define LEN_TYPE                  1
+#define LEN_CHG_TYPE              2
+#define LEN_PLAT_NAME             80
+#define LEN_REMARKS               40
+#define LEN_DATE                  8
+#define LEN_NUM                   8
+#define LEN_TXNNO                 16
+
+typedef struct T_TXN60001
+{
+        char sAccId     [LEN_ACCID     + 1];/*
